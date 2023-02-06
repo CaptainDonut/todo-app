@@ -1,26 +1,32 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from 'react';
 
-function App() {
+
+const TodoApp = () => {
+  const [todo, setTodo] = useState(""); //todo = value in input field. setTodo = function that updates todo value.
+  const [todos, setTodos] = useState<string[]>([]); // visible list of todos
+
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => { //handleSubmit is a react hook 
+    e.preventDefault(); //don't refresh page
+    setTodos([todo, ...todos]); // latest added appear first
+    setTodo(""); //reset after each submit
+  };
+
+// Return form
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      <form onSubmit={handleSubmit}>
+        <input type="text" value={todo} onChange={e => setTodo(e.target.value)} />
+        <button type="submit">Add todo entry</button>
+      </form>
+      <ul>
+        {/* map loops over array and render each todo to <li> elements */}
+        {todos.map((todo, index) => (
+          <li key={index}>{todo}</li>
+        ))}
+      </ul>
     </div>
   );
-}
+};
 
-export default App;
+export default TodoApp;
