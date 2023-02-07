@@ -3,27 +3,27 @@ import './App.css';
 
 
 const App = () => {
-  const [todo, setTodo] = useState(""); //todo = value in input field. setTodo = function that updates todo value.
-  const [todos, setTodos] = useState<{ text: string, done: boolean }[]>([]); // visible list of todos. Hold both text and done states to keep track.
+  const [todo, setTodo] = useState(""); // State for holding value in input field
+  const [todos, setTodos] = useState<{ text: string, done: boolean }[]>([]); // State that holds the list of todos
 
-  // -- Submit --
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => { //react hook
-    e.preventDefault(); //don't refresh page
-    setTodos([{ text: todo, done: false }, ...todos]) // latest added appear first
-    setTodo(""); //reset after each submit
+  // --Form submit handler--
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault(); // Prevent refreshing
+    setTodos([{ text: todo, done: false }, ...todos]) // Add the new todo at the top of the list
+    setTodo(""); // Reset input after submit
   };
 
-  // -- Remove --
-  const handleRemove = (index: number) => { //react hook, list index
-    let currentTodos: { text: string, done: boolean }[] = [...todos]; //get the todos
-    currentTodos.splice(index, 1); //remove 
-    setTodos(currentTodos); //update state
+  // --Remove button handler--
+  const handleRemove = (index: number) => {
+    let currentTodos: { text: string, done: boolean }[] = [...todos]; // Copy the current list of todos
+    currentTodos.splice(index, 1); // Remove the todo at this index
+    setTodos(currentTodos); // Update the state with the changed list of todos
   };
 
-  // -- Done --
+  // --Done button handler--
   const handleDone = (index: number) => {
-    let currentTodos: { text: string, done: boolean }[] = [...todos]; //get the todos
-    currentTodos[index].done = !currentTodos[index].done;
+    let currentTodos: { text: string, done: boolean }[] = [...todos];
+    currentTodos[index].done = !currentTodos[index].done; // Change the done state of this todo
     setTodos(currentTodos);
   };
 
@@ -36,7 +36,7 @@ const App = () => {
         Todo app
       </h1>
 
-      {/* form */}
+      {/* Form for adding new todos */}
       <form onSubmit={handleSubmit} className="w-full max-w-sm">
         <div className="flex items-center border-b border-teal-500 py-2">
           <input
@@ -50,9 +50,9 @@ const App = () => {
         </div>
       </form>
 
-      {/* list */}
+      {/* List displaying all the todos */}
       <ul className="list-disc space-y-4">
-        {/* map loops over array and render each todo to <li> elements. line through if marked as complete */}
+        {/* Loop over the list of todos and render them as list items */}
         {todos.map((todo, index) => (
           <li key={index} style={{ textDecoration: todo.done ? "line-through" : "none" }}>
             {todo.text}
