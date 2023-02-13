@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './App.css';
 
 
@@ -6,9 +6,38 @@ const App = () => {
   const [todo, setTodo] = useState(""); // State for holding value in input field
   const [todos, setTodos] = useState<{ text: string, done: boolean }[]>([]); // State that holds the list of todos
 
+
+  // Load todos func
+  const loadTodos = () => {
+    const todosInStorage = localStorage.getItem('todos'); // Get saved todos
+    console.log("load:" + localStorage.getItem('todos'))
+    if (todosInStorage) { // Can't parse null
+      setTodos(JSON.parse(todosInStorage)); // Use setTodos func to set todos from storage
+    }
+  };
+
+  // Save todo func
+  const saveTodos = () => {
+    localStorage.setItem('todos', JSON.stringify(todos)); // Save todos in storage using setItem
+    console.log("save:" + localStorage.getItem('todos'))
+  };
+
+  
+  // Load todos on start
+  useEffect(() => {
+    loadTodos();
+  }, []); // Run only once
+
+  // Save todos on each change
+  useEffect(() => {
+    saveTodos();
+  }, [todos]); //When list of todos change, save
+
+
   // --Form submit handler--
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault(); // Prevent refreshing
+    if (!todo) return // Disallow empty values
     setTodos([{ text: todo, done: false }, ...todos]) // Add the new todo at the top of the list
     setTodo(""); // Reset input after submit
   };
@@ -26,7 +55,6 @@ const App = () => {
     currentTodos[index].done = !currentTodos[index].done; // Change the done state of this todo
     setTodos(currentTodos);
   };
-
 
   // Return the site:
   return (
@@ -55,7 +83,9 @@ const App = () => {
         {/* Loop over the list of todos and render them as list items */}
         {todos.map((todo, index) => (
           <li key={index} style={{ textDecoration: todo.done ? "line-through" : "none" }}>
+            <div className="space-x-4">
             {todo.text}
+            </div>
             <button type="button" className="done-button"
               onClick={() => handleDone(index)}> Mark as done </button>
             <button type="button" className="delete-button"
